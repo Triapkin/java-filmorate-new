@@ -33,9 +33,7 @@ public class UserController {
         if (users.containsKey(user.getId())) {
             User updatedUser = users.get(user.getId());
             updatedUser.setName(user.getName());
-            if (user.getName() == null || user.getName().isBlank()) {
-                updatedUser.setName(user.getLogin());
-            }
+            updatedUser.setLogin(user.getLogin());
             updatedUser.setEmail(user.getEmail());
             updatedUser.setBirthday(user.getBirthday());
             log.info("User with id {} was updated", updatedUser.getId());

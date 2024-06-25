@@ -31,8 +31,7 @@ public class User {
     private LocalDate birthday;
 
     public void setName(String name) {
-        if (name == null || name.isEmpty()) {
-            this.name = login;
-        }
+        if (name == null || name.isEmpty()) this.name = login;
+        else this.name = name;
     }
 }
