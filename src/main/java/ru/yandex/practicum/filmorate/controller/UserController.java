@@ -1,63 +1,56 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private final Map<Integer, User> users = new HashMap<>();
+    private final UserService userService;
 
     @GetMapping
-    public Collection<User> getUsers() {
-        log.info("Get all users");
-        return users.values();
+    public Collection<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @PostMapping
+    public User addUser(@Valid @RequestBody User user) {
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        if (user.getId() == 0) {
-            throw new ValidationException("id is required");
-        }
-
-        if (users.containsKey(user.getId())) {
-            User updatedUser = users.get(user.getId());
-            updatedUser.setName(user.getName());
-            updatedUser.setLogin(user.getLogin());
-            updatedUser.setEmail(user.getEmail());
-            updatedUser.setBirthday(user.getBirthday());
-            log.info("User with id {} was updated", updatedUser.getId());
-            return updatedUser;
-        }
-
-        throw new NotFoundException("User with id = " + user.getId() + " not found");
+        return userService.putUser(user);
     }
 
-    @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        user.setId(getNextId());
-        user.setName(user.getName());
-        users.put(user.getId(), user);
-        log.info("User with id {} was created", user.getId());
-        return user;
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriends(@PathVariable int id, @PathVariable int friendId) {
+        return userService.addFriends(id, friendId);
     }
 
-    private int getNextId() {
-        int currentMaxId = users.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public Set<Integer> deleteFriends(@PathVariable int id, @PathVariable int friendId) {
+        return userService.deleteFriends(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getListFriends(@PathVariable int id) {
+        return userService.listFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{secondId}")
+    public List<User> listCommonFriends(@PathVariable int id, @PathVariable int secondId) {
+        return userService.listCommonFriends(id, secondId);
     }
 }
