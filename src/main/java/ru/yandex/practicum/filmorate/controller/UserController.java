@@ -21,36 +21,43 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAllUsers() {
+        log.info("Get all users");
         return userService.getAllUsers();
     }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
+        log.info("Add user: {}", user);
         return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
+        log.info("Update user: {}", user);
         return userService.putUser(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriends(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Add friend: {}", friendId);
         return userService.addFriends(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public Set<Integer> deleteFriends(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Delete friend: {}", friendId);
         return userService.deleteFriends(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
     public List<User> getListFriends(@PathVariable int id) {
+        log.info("Get list friends: {}", id);
         return userService.listFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{secondId}")
     public List<User> listCommonFriends(@PathVariable int id, @PathVariable int secondId) {
+        log.info("List common friends: {}", id);
         return userService.listCommonFriends(id, secondId);
     }
 }

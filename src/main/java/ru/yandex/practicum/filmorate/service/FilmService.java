@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final InMemoryFilmStorage inMemoryFilmStorage;
     private final InMemoryUserStorage inMemoryUserStorage;
-    private static final int COUNT_FILMS = 10;
 
     public Film addLike(int filmId, int userId) {
         User user = inMemoryUserStorage.findById(userId);
@@ -42,7 +41,6 @@ public class FilmService {
     public List<Film> getPopular(int count) {
         return inMemoryFilmStorage.getAllFilms().stream()
                 .sorted(Comparator.comparingInt(film -> -film.getLikes().size()))
-                .limit(count > 0 ? count : COUNT_FILMS)
                 .collect(Collectors.toList());
     }
 

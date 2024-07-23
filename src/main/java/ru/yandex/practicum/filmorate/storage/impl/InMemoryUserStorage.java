@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.interfaces.UserStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -60,8 +60,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User findById(int id) {
-        if (users.get(id) == null) throw new NotFoundException("Not found user with id: " + id);
-        return users.get(id);
+        User user = users.get(id);
+        if (user == null) throw new NotFoundException("Not found user with id: " + id);
+        return user;
     }
 
     private int getNextId() {
