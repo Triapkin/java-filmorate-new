@@ -41,6 +41,7 @@ public class FilmService {
     public List<Film> getPopular(int count) {
         return inMemoryFilmStorage.getAllFilms().stream()
                 .sorted(Comparator.comparingInt(film -> -film.getLikes().size()))
+                .limit(count)
                 .collect(Collectors.toList());
     }
 

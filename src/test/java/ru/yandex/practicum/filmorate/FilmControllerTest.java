@@ -122,7 +122,7 @@ public class FilmControllerTest {
     }
 
     @Test
-    public void test_дGetPopular() {
+    public void test_GetPopular() {
         filmController.likeFilm(film.getId(), 1);
         filmController.likeFilm(film.getId(), 2);
         filmController.likeFilm(anotherFilm.getId(), 1);
