@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -123,7 +124,7 @@ public class UserTest {
 
     @Test
     public void test_userWithEmptyNameUsesLogin() {
-        User user = new User(1, "valid@example.com", "validLogin", "", LocalDate.of(2000, 1, 1));
+        User user = new User(1, "valid@example.com", "validLogin", "", LocalDate.of(2000, 1, 1), new HashSet<>());
         user.setName("");
 
         Set<ConstraintViolation<User>> violations = validator.validate(user);

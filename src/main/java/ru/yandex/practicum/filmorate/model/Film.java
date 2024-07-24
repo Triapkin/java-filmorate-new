@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -25,4 +26,6 @@ public class Film {
 
     @Positive(message = "The length of the movie must be a positive number")
     private int duration;
+
+    Set<Integer> likes;
 }

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -34,4 +35,6 @@ public class User {
         if (name == null || name.isEmpty()) this.name = login;
         else this.name = name;
     }
+
+    Set<Integer> friends;
 }
