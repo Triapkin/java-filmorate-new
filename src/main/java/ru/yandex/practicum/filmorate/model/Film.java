@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -28,4 +30,7 @@ public class Film {
     private int duration;
 
     Set<Integer> likes;
+
+    private Mpa mpa;
+    private List<Genre> genres;
 }

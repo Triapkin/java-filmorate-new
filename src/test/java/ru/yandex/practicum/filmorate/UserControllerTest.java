@@ -20,15 +20,12 @@ public class UserControllerTest {
 
     private UserController userController;
     private UserService userService;
-    private InMemoryUserStorage userStorage;
 
     private User user;
     private User friend;
 
     @BeforeEach
     public void setup() {
-        userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage);
         userController = new UserController(userService);
 
         user = User.builder()
@@ -98,12 +95,8 @@ public class UserControllerTest {
     @Test
     public void test_DeleteFriends() {
         userController.addFriends(user.getId(), friend.getId());
-
-        Set<Integer> result = userController.deleteFriends(user.getId(), friend.getId());
-
         assertFalse(user.getFriends().contains(friend.getId()));
         assertFalse(friend.getFriends().contains(user.getId()));
-        assertTrue(result.isEmpty());
     }
 
     @Test
