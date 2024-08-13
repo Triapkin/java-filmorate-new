@@ -35,6 +35,7 @@ public class UserDbStorageTest {
         jdbcTemplate.execute("CREATE TABLE friends (user_id BIGINT, friend_id BIGINT, PRIMARY KEY (user_id, friend_id))");
     }
 
+
     @Test
     void updateUser() {
         User user = new User(1, "Test User", "test@example.com", "testuser", LocalDate.of(2000, 1, 1), new HashSet<>());
