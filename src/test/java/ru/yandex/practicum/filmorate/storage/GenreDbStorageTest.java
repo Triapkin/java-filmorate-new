@@ -27,9 +27,9 @@ public class GenreDbStorageTest {
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.execute("DROP TABLE IF EXISTS genre_type");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS genre_type CASCADE");
         jdbcTemplate.execute("CREATE TABLE genre_type (id INT PRIMARY KEY, name VARCHAR(50))");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS film_genres");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS film_genres CASCADE");
         jdbcTemplate.execute("CREATE TABLE film_genres (film_id INT, genre_id INT)");
         jdbcTemplate.execute("INSERT INTO genre_type (id, name) VALUES (1, 'Action')");
         jdbcTemplate.execute("INSERT INTO genre_type (id, name) VALUES (2, 'Comedy')");

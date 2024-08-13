@@ -27,7 +27,7 @@ public class MpaDbStorageTest {
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.execute("DROP TABLE IF EXISTS mpa_type");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS mpa_type CASCADE");
         jdbcTemplate.execute("CREATE TABLE mpa_type (id INT PRIMARY KEY, name VARCHAR(50))");
         jdbcTemplate.execute("INSERT INTO mpa_type (id, name) VALUES (1, 'G')");
         jdbcTemplate.execute("INSERT INTO mpa_type (id, name) VALUES (2, 'PG')");

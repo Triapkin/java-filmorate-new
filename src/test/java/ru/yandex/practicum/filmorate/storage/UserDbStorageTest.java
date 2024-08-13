@@ -29,9 +29,9 @@ public class UserDbStorageTest {
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE");
         jdbcTemplate.execute("CREATE TABLE users (id SERIAL PRIMARY KEY, email VARCHAR(255), login VARCHAR(255), name VARCHAR(255), birthday DATE)");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS friends");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS friends CASCADE");
         jdbcTemplate.execute("CREATE TABLE friends (user_id BIGINT, friend_id BIGINT, PRIMARY KEY (user_id, friend_id))");
     }
 
