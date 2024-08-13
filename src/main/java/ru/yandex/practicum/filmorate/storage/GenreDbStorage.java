@@ -26,9 +26,9 @@ public class GenreDbStorage {
     private final GenreRowMapper mapper;
 
     public List<Genre> addGenre(int filmId, List<Genre> genres) {
-        genres.forEach(genre -> {
-            getGenreById(genre.getId());
-            jdbc.update(INSERT_FILM_GENRES, filmId, genre.getId());
+        jdbc.batchUpdate(INSERT_FILM_GENRES, genres, genres.size(), (ps, genre) -> {
+            ps.setInt(1, filmId);
+            ps.setInt(2, genre.getId());
         });
         return getGenresListForFilm(filmId);
     }
