@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.UserDbStorage;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,68 +15,51 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final InMemoryUserStorage inMemoryUserStorage;
+    private final UserDbStorage userDbStorage;
 
     public User addFriends(int id, int friendId) {
         if (id == friendId)
             throw new ValidationException("Can't add yourself as a friend");
-
-        User user = inMemoryUserStorage.findById(id);
-        user.getFriends().add(friendId);
-
-        User friend = inMemoryUserStorage.findById(friendId);
-        friend.getFriends().add(id);
-
-        inMemoryUserStorage.updateUser(user);
-        inMemoryUserStorage.updateUser(friend);
-
-        return friend;
+        userDbStorage.addFriend(id, friendId);
+        return userDbStorage.findById(id);
     }
 
-    public Set<Integer> deleteFriends(int id, int friendId) {
-        User user = inMemoryUserStorage.findById(id);
-        user.getFriends().remove(friendId);
-
-        User friend = inMemoryUserStorage.findById(friendId);
-        friend.getFriends().remove(id);
-
-        inMemoryUserStorage.updateUser(user);
-        inMemoryUserStorage.updateUser(friend);
-
-        return user.getFriends();
+    public void deleteFriends(int id, int friendId) {
+        userDbStorage.deleteFriend(id, friendId);
     }
 
     public List<User> listCommonFriends(int id, int secondId) {
-        User user = inMemoryUserStorage.findById(id);
-        User secondUser = inMemoryUserStorage.findById(secondId);
 
-        return user.getFriends().stream()
-                .filter(friendId -> secondUser.getFriends().contains(friendId))
-                .map(inMemoryUserStorage::findById)
+        Set<Integer> userFriends = userDbStorage.getFriendsByUserId(id);
+        Set<Integer> secondUserFriends = userDbStorage.getFriendsByUserId(secondId);
+
+        return userFriends.stream()
+                .filter(secondUserFriends::contains)
+                .map(userDbStorage::findById)
                 .collect(Collectors.toList());
     }
 
     public List<User> listFriends(int id) {
-        User user = inMemoryUserStorage.findById(id);
-
-        return user.getFriends().stream()
-                .map(inMemoryUserStorage::findById)
+        userDbStorage.findById(id);
+        Set<Integer> friendIds = userDbStorage.getFriendsByUserId(id);
+        return friendIds.stream()
+                .map(userDbStorage::findById)
                 .collect(Collectors.toList());
     }
 
-    public Collection<User> getAllUsers() {
-        return inMemoryUserStorage.getAllUsers();
-    }
-
     public void delete(int id) {
-        inMemoryUserStorage.delete(id);
+        userDbStorage.delete(id);
     }
 
     public User addUser(User user) {
-        return inMemoryUserStorage.addUser(user);
+        return userDbStorage.addUser(user);
     }
 
     public User putUser(User user) {
-        return inMemoryUserStorage.updateUser(user);
+        return userDbStorage.updateUser(user);
+    }
+
+    public Collection<User> getAllUsers() {
+        return userDbStorage.getAllUsers();
     }
 }

@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +22,12 @@ public class FilmController {
     public Collection<Film> getAllFilms() {
         log.info("Get all films");
         return filmService.getAllFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable int id) {
+        log.info("Get film by id: {}", id);
+        return filmService.getFilmById(id);
     }
 
     @PostMapping
@@ -43,7 +49,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
-    public Set<Integer> deleteLikes(@PathVariable int filmId, @PathVariable int userId) {
+    public List<Integer> deleteLikes(@PathVariable int filmId, @PathVariable int userId) {
         log.info("Delete likes film: {}", filmId);
         return filmService.deleteLikes(filmId, userId);
     }
@@ -52,5 +58,11 @@ public class FilmController {
     public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
         log.info("Get popular films");
         return filmService.getPopular(count);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm(@PathVariable int id) {
+        log.info("Delete films: {}", id);
+        filmService.delete(id);
     }
 }

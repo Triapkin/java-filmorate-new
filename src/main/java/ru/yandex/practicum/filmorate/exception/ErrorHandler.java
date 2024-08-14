@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.exception;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +20,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final Exception e) {
         return new ErrorResponse("Ошибка валидации", e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateKeyException(final DuplicateKeyException e) {
+        return new ErrorResponse("Ошибка", "Такая запись уже сущесвует");
     }
 
     @ExceptionHandler(Exception.class)

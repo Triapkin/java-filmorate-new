@@ -2,62 +2,62 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.impl.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.LikeDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.UserDbStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-    private final InMemoryFilmStorage inMemoryFilmStorage;
-    private final InMemoryUserStorage inMemoryUserStorage;
+
+    private final FilmDbStorage filmDbStorage;
+    private final UserDbStorage userDbStorage;
+    private final LikeDbStorage likeDbStorage;
 
     public Film addLike(int filmId, int userId) {
-        User user = inMemoryUserStorage.findById(userId);
-        Film film = inMemoryFilmStorage.findById(filmId);
-        film.getLikes().add(user.getId());
-        inMemoryFilmStorage.updateFilm(film);
-        return film;
+        likeDbStorage.addLike(filmId, userId);
+        return filmDbStorage.findById(filmId);
     }
 
-    public Set<Integer> deleteLikes(int filmId, int userId) {
-        User user = inMemoryUserStorage.findById(userId);
-        Film film = inMemoryFilmStorage.findById(filmId);
-        if (!film.getLikes().contains(user.getId()))
-            throw new NotFoundException("User with id:  " + user.getId() + " didn't like the movie with id: " + filmId);
-        film.getLikes().remove(user.getId());
-        inMemoryFilmStorage.updateFilm(film);
-        return film.getLikes();
+    public List<Integer> deleteLikes(int filmId, int userId) {
+        User user = userDbStorage.findById(userId);
+        Film film = filmDbStorage.findById(filmId);
+        likeDbStorage.deleteLike(filmId, userId);
+        return likeDbStorage.getLikesByFilmId(film.getId());
     }
+
+    public Film getFilmById(int filmId) {
+        return filmDbStorage.findById(filmId);
+    }
+
 
     public List<Film> getPopular(int count) {
-        return inMemoryFilmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt(film -> -film.getLikes().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+        List<Film> list = new ArrayList<>();
+        for (int id : likeDbStorage.getFilmsIdByLike()) {
+            list.add(filmDbStorage.findById(id));
+        }
+        return list;
     }
 
     public Collection<Film> getAllFilms() {
-        return inMemoryFilmStorage.getAllFilms();
+        return filmDbStorage.getAllFilms();
     }
 
     public void delete(int id) {
-        inMemoryFilmStorage.deleteFilm(id);
+        filmDbStorage.deleteFilm(id);
     }
 
     public Film updateFilm(Film film) {
-        return inMemoryFilmStorage.updateFilm(film);
+        return filmDbStorage.updateFilm(film);
     }
 
     public Film addNewFilm(Film film) {
-        return inMemoryFilmStorage.addNewFilm(film);
+        return filmDbStorage.addNewFilm(film);
     }
 }
